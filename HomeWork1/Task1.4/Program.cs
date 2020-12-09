@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task14
 {
@@ -32,8 +27,6 @@ namespace Task14
                 }
                 if (isPrime) Console.WriteLine($"{i} is prime");
             }
-
-            Console.ReadKey();
         }
     }
 }

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
 
 namespace Task24
 {
@@ -70,8 +64,6 @@ namespace Task24
             Console.WriteLine($"Points: {points}");
             Console.WriteLine($"Attempts: {attempts}");
             Console.WriteLine($"Game duration: {DateTime.Now.Subtract(startTime)}");
-            Console.ReadKey();
-
         }
 
         static int getN(int diff)

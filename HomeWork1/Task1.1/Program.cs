@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task11
 {
@@ -24,7 +20,6 @@ namespace Task11
             var a = Double.Parse(Console.ReadLine());
             var y = f(a, b, c, d);
             Console.WriteLine($"y = {y}");
-            Console.ReadKey();
         }
 
         static double f(double a, int b, int c, int d)

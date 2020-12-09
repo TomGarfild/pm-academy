@@ -1,110 +1,218 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace Task3
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            Console.WriteLine("Task 3");
-            Console.WriteLine("Calculator");
-            Console.WriteLine("Author: Safroniuk Oleksii\n");
-            Console.WriteLine("You can input math expression.");
-            Console.WriteLine("You expression contains binary or unary operators, and one or two operands");
-            Console.WriteLine("Type exit if you want to stop program, or help if you need it.");
-            do
+            if (args.Length == 0)
             {
-                Console.Write("Input math expression: ");
-                var expression = Console.ReadLine();
-                if (expression == "exit") break;
-                else if (expression == "help") PrintHelp();
-                else
+                //dialog mode
+                Console.WriteLine("Task 3");
+                Console.WriteLine("Calculator");
+                Console.WriteLine("Author: Safroniuk Oleksii\n");
+                Console.WriteLine("You can input math expression.");
+                Console.WriteLine("You expression contains binary or unary operators, and one or two operands.");
+                Console.WriteLine("Type exit if you want to stop program, or help if you need it in any case.");
+                do
                 {
-                    int index = 0;
-                    double result = 0;
-                    int countOperands = 0;
-                    while (index < expression.Length)
+                    Console.Write("Input math expression or command: ");
+                    var expression = Console.ReadLine().ToLower();
+                    expression = String.Concat(expression.Split(' '));
+                    if (expression == "exit") break;
+                    else if (expression == "help") PrintHelp();
+                    else
                     {
-
-                        if (Char.IsDigit(expression[index]))
+                        try
                         {
-                            try
-                            {
-                                GetResult(ref result, expression, ref index, '+');
-                            }
-                            catch (InvalidCastException)
-                            {
-                                Console.WriteLine("Your input consists wrong number.");
-                                break;
-                            }
-
-                            countOperands++;
+                            DoCalculation(expression);
                         }
-                        else if (IsOperator(expression[index]))
+
+                        catch (DivideByZeroException)
                         {
-                            index++;
-                            try
-                            {
-                                GetResult(ref result, expression, ref index, expression[index - 1]);
-                            }
-                            catch (InvalidCastException)
-                            {
-                                Console.WriteLine("Your input has wrong number.");
-                                break;
-                            }
-                            catch (DivideByZeroException)
-                            {
-                                Console.WriteLine("You cannot divide by zero!");
-                                break;
-                            }
-                            countOperands++;
-                            if (countOperands == 2 && index == expression.Length) Console.WriteLine(result);
-                            else
-                            {
-                                Console.WriteLine("Input is wrong. You should buy PRO version of the application for such actions!");
-                                break;
-                            }
+                            Console.WriteLine("Division by zero is forbidden!");
                         }
-                        else if (IsBinaryBitOperator(expression[index]))
+                        catch (ArgumentException)
                         {
-                            if (countOperands == 1)
-                            {
-                                index++;
-                                GetResult(ref result, expression, ref index, expression[index - 1]);
-                                if (index == expression.Length)
-                                {
-                                    Console.WriteLine((int)result);
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Wrong Input!");
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Wrong input!");
-                                break;
-                            }
-                            countOperands++;
+                            Console.WriteLine("Operands should be positive when you use bit operators!");
+                        }
+                        catch (OverflowException)
+                        {
+                            Console.WriteLine("Factorial is too big!");
+                        }
+                        catch (ArithmeticException)
+                        {
+                            Console.WriteLine("Wrong input! You can use command help.");
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            Console.WriteLine("You should buy PRO version for such math expressions!");
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Error occurred. Application will stop.");
+                            break;
                         }
                     }
+                } while (true);
+            }
+            else
+            {
+                //command mode
+                var expression = String.Concat(args);
+                try
+                {
+                     DoCalculation(expression);
                 }
-            } while (true);
-            Console.ReadKey();
+                catch (Exception)
+                {
+                    return -1;
+                }
+            }
+            return 0;
         }
 
+        static void DoCalculation(string expression)
+        {
+            int index = 0;
+            double result = 0;
+            int countOperands = 0;
+            int length = expression.Length;
+
+            while (index < length)
+            {
+ 
+                if (expression[index] == ' ')
+                {
+                    index++;
+                }
+                else if (Char.IsDigit(expression[index]))
+                {
+                    GetResult(ref result, expression, ref index, '+');
+
+                    countOperands++;
+                    if (index == length)
+                    {
+                        Console.WriteLine(result);
+                    }
+                }
+                else if (IsOperator(expression[index]))
+                {
+                    index++;
+                    if (index == length || (countOperands == 0 && expression[index - 1] != '-'))
+                    {
+                        throw new ArithmeticException();
+                    }
+
+                    GetResult(ref result, expression, ref index, expression[index - 1]);
+                    
+                    countOperands++;
+                    if (countOperands <= 2 && index == length)
+                    {
+                        Console.WriteLine(result);
+                    }
+                    else if (countOperands >= 2)
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                }
+                else if (IsBinaryBitOperator(expression[index]))
+                {
+                    if (countOperands == 1)
+                    {
+                        index++;
+                        if (index == length)
+                        {
+                            throw new ArithmeticException();
+                        }
+
+                        GetResult(ref result, expression, ref index, expression[index - 1]);
+
+                        if (index == length)
+                        {
+                            Console.WriteLine((int)result);
+                        }
+                        else
+                        {
+                            throw new IndexOutOfRangeException();
+                        }
+                    }
+                    else if (countOperands == 0)
+                    {
+                        throw new ArithmeticException();
+                    }
+                    else
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                    countOperands++;
+                }
+                else if (expression[index] == '!')
+                {
+                    if (countOperands == 1 )
+                    {
+                        if (++index != length)
+                        {
+                            throw new IndexOutOfRangeException();
+                        }
+                        //factorial
+                        if (result < 0)
+                        {
+                            throw new ArithmeticException();
+                        }
+
+                        Console.WriteLine(GetFactorial((int)result));
+
+                    }
+                    else if (countOperands == 0 )
+                    {
+                        if (index + 1 == length)
+                        {
+                            throw new ArithmeticException();
+                        }
+
+                        index++;
+                        GetResult(ref result, expression, ref index, '!');
+                        if (index != length)
+                        {
+                            throw new IndexOutOfRangeException();
+                        }
+                        Console.WriteLine(result);
+                    }
+                    else
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                }
+                else if (expression.IndexOf("pow") == index)
+                {
+                    index += 3;
+                    if (index == length || countOperands == 0)
+                    {
+                        throw new ArithmeticException();
+                    }
+                    GetResult(ref result, expression, ref index, 'p');
+
+                    if (index == length)
+                    {
+                        Console.WriteLine(result);
+                    }
+                    else
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                }
+                else
+                {
+                    throw new ArithmeticException();
+                }
+            }
+        }
         static void PrintHelp()
         {
             Console.WriteLine("You must type only one or two operands.");
-            Console.WriteLine("Binary operators: a+b, a-b, a*b, axb, a/b, a\\b, a%b, a pow b, where a,b - integers.");
+            Console.WriteLine("Binary operators: a+b, a-b, a*b, axb, a/b, a\\b, a%b, a pow b, where a,b - double values.");
             Console.WriteLine("Binary bit operators: a&b, a|b, a^b, where operands are only positive.");
             Console.WriteLine("Unary bit operator: !a, where operand is only positive.");
             Console.WriteLine("Unary operators: a!(factorial), a(echo mode), -a");
@@ -115,42 +223,121 @@ namespace Task3
             if (c == '+' || c == '-' ||
                 c == '*' || c == 'x' ||
                 c == '/' || c == '\\' ||
-                c == '%') return true;
+                c == '%')
+            {
+                return true;
+            }
             return false;
         }
 
         static bool IsBinaryBitOperator(char c)
         {
-            if (c == '&' || c == '|' || c == '^') return true;
+            if (c == '&' || c == '|' || c == '^')
+            {
+                return true;
+            }
             return false;
         }
+
         static void GetResult(ref double result, string expression, ref int index, char Operator)
         {
             string number = "";
             double currentOperand;
             do
             {
+                if (expression[index] == '+')
+                {
+                    throw new ArithmeticException();
+                }
                 number += expression[index];
                 ++index;
             } while (index < expression.Length &&
                      (Char.IsDigit(expression[index]) || expression[index] == '.'));
-            if (!Double.TryParse(number, out currentOperand))
-                throw new InvalidCastException();
 
+            if (!Double.TryParse(number, out currentOperand))
+            {
+                throw new ArithmeticException();
+            }
             result = DoOperation(result, currentOperand, Operator);
         }
+
         static double DoOperation(double Operand1, double Operand2, char Operator)
         {
-            if (Operator == '+') return Operand1 + Operand2;
-            else if (Operator == '-') return Operand1 - Operand2;
-            else if (Operator == '*' || Operator == 'x') return Operand1 * Operand2;
-            else if (Operator == '\\' || Operator == '/') return Operand1 * Operand2;
-            else if (Operator == '%') return Operand1 % Operand2;
-            else if (Operator == '&') return (int)Operand1 & (int)Operand1;
-            else if (Operator == '|') return (int)Operand1 | (int)Operand2;
-            else if (Operator == '^') return (int)Operand1 ^ (int)Operand2;
-            else return 0;
+            if (Operator == '+')
+            {
+                return Operand1 + Operand2;
+            }
+            else if (Operator == '-')
+            {
+                return Operand1 - Operand2;
+            }
+            else if (Operator == '*' || Operator == 'x')
+            {
+                return Operand1 * Operand2;
+            }
+            else if (Operator == '\\' || Operator == '/')
+            {
+                if (Operand2 == 0)
+                {
+                    throw new DivideByZeroException();
+                }
+                return Operand1 / Operand2;
+            }
+            else if (Operator == '%')
+            {
+                return Operand1 % Operand2;
+            }
+            else if (Operator == '&') 
+            {
+                if (Operand1 <= 0 || Operand2 <= 0)
+                {
+                    throw new ArgumentException();
+                }
+                return (int)Operand1 & (int)Operand2;
+            }
+            else if (Operator == '|')
+            {
+                if (Operand1 <= 0 || Operand2 <= 0)
+                {
+                    throw new ArgumentException();
+                }
+                return (int)Operand1 | (int)Operand2;
+            }
+            else if (Operator == '^')
+            {
+                if (Operand1 <= 0 || Operand2 <= 0)
+                {
+                    throw new ArgumentException();
+                }
+                return (int)Operand1 ^ (int)Operand2;
+            }
+            else if (Operator == '!')
+            {
+                if (Operand2 <= 0)
+                {
+                    throw new ArgumentException();
+                }
+                return ~(int) Operand2;
+            }
+            else if (Operator == 'p')
+            {
+                return Math.Pow(Operand1, Operand2);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        static Int64 GetFactorial(int n)
+        {
+            checked
+            {
+                Int64 result = 1;
+                for (int i = 2; i <= n; ++i) result *= i;
+                return result;
+            }
+            
         }
     }
-
 }

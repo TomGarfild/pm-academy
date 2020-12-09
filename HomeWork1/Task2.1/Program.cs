@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task21
 {
@@ -17,7 +13,6 @@ namespace Task21
             Console.WriteLine("Game Stone-Scissors-Paper.");
             Console.WriteLine("Author: Safroniuk Oleksii\n");
             PlayGame();
-            Console.ReadKey();
         }
 
         static void PlayGame()

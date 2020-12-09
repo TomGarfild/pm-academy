@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Task23
 {
@@ -130,7 +125,6 @@ namespace Task23
             if (!commandMode) Console.WriteLine("Sorted array:");
             var sortedArray = Sort(array);
             foreach (var element in sortedArray) Console.Write($"{element} ");
-            Console.ReadKey();
         }
     }
 
