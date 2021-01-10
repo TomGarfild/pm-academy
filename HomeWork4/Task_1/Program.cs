@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Threading.Channels;
 
 namespace Task_1
 {
@@ -10,12 +9,13 @@ namespace Task_1
     {
         static void Main()
         {
-            var start = DateTime.UtcNow;
             Result result;
             try
             {
                 var json = File.ReadAllText("settings.json");
                 var settings = JsonSerializer.Deserialize<Settings>(json);
+
+                var start = DateTime.UtcNow;
                 var primes = GetPrimes(settings.PrimesFrom, settings.PrimesTo);
 
                 result = new Result()
@@ -38,7 +38,7 @@ namespace Task_1
                 {
                     Success = false,
                     Error = errorMessage,
-                    Duration = (DateTime.UtcNow - start).ToString(),
+                    Duration = "0:00:00",
                     Primes = null
 
                 };
@@ -49,10 +49,11 @@ namespace Task_1
 
         static int[] GetPrimes(int low, int high)
         {
+            //if low is less than 2 we will start from 2 else from low
+            low = Math.Max(low, 2);
             var primes = new List<int>();
             for (int i = low; i < high; i++)
             {
-                if (i < 2) continue;
                 var isPrime = true;
                 for (int j = 2; j * j <= i; j++)
                 {

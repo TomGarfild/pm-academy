@@ -1,4 +1,4 @@
 {
-  "primesFrom": 0,
-  "primesTo": 2000
+  "primesFrom": -2000000000,
+  "primesTo": 30000000
 }
