@@ -16,39 +16,24 @@ namespace Task_2
             Console.WriteLine("Currency converter");
             Console.WriteLine("Author: Safroniuk Oleksii\n");
 
-            Console.WriteLine("Enter initial currency");
-            var initialCurrency = Console.ReadLine()?.Trim().ToUpper();
-            while (String.IsNullOrWhiteSpace(initialCurrency) || initialCurrency.Length != 3)
-            {
-                Console.WriteLine("Wrong input. You should enter string length 3");
-                initialCurrency = Console.ReadLine()?.Trim().ToUpper();
-            }
-            Console.WriteLine("Enter desired currency");
-            var desiredCurrency = Console.ReadLine()?.Trim().ToUpper();
-            while (String.IsNullOrWhiteSpace(desiredCurrency) || desiredCurrency.Length != 3)
-            {
-                Console.WriteLine("Wrong input. You should enter string length 3");
-                desiredCurrency = Console.ReadLine()?.Trim();
-            }
+            var initialCurrency = GetInitialCurrency();
+            var desiredCurrency = GetDesiredCurrency();
+            var sum = GetSum();
 
-            decimal sum;
-            do
+            var httpClient = new HttpClient
             {
-                Console.WriteLine("Enter non-negative decimal number");
-            } while (!Decimal.TryParse(Console.ReadLine(), out sum) || sum < 0);
-
-            var httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(@"https://bank.gov.ua/NBUStatService/v1/");
-            httpClient.Timeout = TimeSpan.FromSeconds(10);
-            var response = await httpClient.GetAsync("statdirectory/exchange?json");
+                BaseAddress = new Uri(@"https://bank.gov.ua/NBUStatService/v1/"),
+                Timeout = TimeSpan.FromSeconds(10)
+            };
 
             try
             {
+                var response = await httpClient.GetAsync("statdirectory/exchange?json");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 await File.WriteAllTextAsync("cache.json", json);
             }
-            catch (HttpRequestException)
+            catch (Exception)
             {
                 Console.WriteLine("Updating currency rate was unsuccessful");
             }
@@ -65,7 +50,7 @@ namespace Task_2
                 return;
             }
             var date = currencies[0].ExchangeDate;
-            currencies.Add(new Currency() { Cc = "UAH", ExchangeDate = date, Rate = 1 });
+            currencies.Add(new Currency() { Cc = "UAH", Rate = 1 });
 
             decimal initialCurrencyRate;
             try
@@ -89,7 +74,44 @@ namespace Task_2
                 return;
             }
             decimal rate = Decimal.Round(initialCurrencyRate / desiredCurrencyRate, 4);
-            Console.WriteLine($"{sum} {initialCurrency} x {rate} = {rate * sum} {desiredCurrency} ({date})", 2);
+            Console.WriteLine($"{sum} {initialCurrency} x {rate} = {rate * sum} {desiredCurrency} ({date})");
+        }
+
+        private static string GetInitialCurrency()
+        {
+            Console.WriteLine("Enter initial currency");
+            var initialCurrency = Console.ReadLine()?.Trim().ToUpper();
+            while (String.IsNullOrEmpty(initialCurrency) || initialCurrency.Length != 3)
+            {
+                Console.WriteLine("Wrong input. You should enter string length 3");
+                initialCurrency = Console.ReadLine()?.Trim().ToUpper();
+            }
+
+            return initialCurrency;
+        }
+
+        private static string GetDesiredCurrency()
+        {
+            Console.WriteLine("Enter desired currency");
+            var desiredCurrency = Console.ReadLine()?.Trim().ToUpper();
+            while (String.IsNullOrEmpty(desiredCurrency) || desiredCurrency.Length != 3)
+            {
+                Console.WriteLine("Wrong input. You should enter string length 3");
+                desiredCurrency = Console.ReadLine()?.Trim().ToUpper();
+            }
+
+            return desiredCurrency;
+        }
+
+        private static decimal GetSum()
+        {
+            decimal sum;
+            do
+            {
+                Console.WriteLine("Enter non-negative decimal number");
+            } while (!Decimal.TryParse(Console.ReadLine(), out sum) || sum < 0);
+
+            return sum;
         }
     }
 }

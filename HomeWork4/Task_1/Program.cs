@@ -5,9 +5,9 @@ using System.Text.Json;
 
 namespace Task_1
 {
-    class Program
+    public class Program
     {
-        static void Main()
+        public static void Main()
         {
             Result result;
             try
@@ -47,7 +47,7 @@ namespace Task_1
             File.WriteAllText("result.json", jsonSerialize);
         }
 
-        static int[] GetPrimes(int low, int high)
+        private static int[] GetPrimes(int low, int high)
         {
             //if low is less than 2 we will start from 2 else from low
             low = Math.Max(low, 2);
