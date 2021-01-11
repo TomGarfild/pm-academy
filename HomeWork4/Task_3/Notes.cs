@@ -39,7 +39,6 @@ namespace Task_3
             {
                 result = _listOfNotes.Where(n =>
                         n.Id.ToString().Contains(filter)
-                        || n.Title.Contains(filter)
                         || n.CreatedOn.ToString(CultureInfo.CurrentCulture).Contains(filter)
                         || n.Text.Contains(filter)).ToList();
             }
