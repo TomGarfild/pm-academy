@@ -2,9 +2,9 @@
 using NotesApp.Tools;
 using Xunit;
 
-namespace NotesApp.Tests
+namespace NotesApp.Tests.ToolsTests
 {
-    public class ToolsTests
+    public class NumberGeneratorTests
     {
         [Fact]
         public void GeneratePositiveLong_Should_Fail_If_Value_Invalid()
