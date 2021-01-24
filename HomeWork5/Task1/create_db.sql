@@ -1,0 +1,1 @@
+CREATE DATABASE safroniuk_notes;

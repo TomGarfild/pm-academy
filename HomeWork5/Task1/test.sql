@@ -1,0 +1,18 @@
+SELECT insert_user('Oleksii', 'Safroniuk');
+SELECT insert_user('Maxim', 'Lapenko');
+SELECT insert_user('Elon', 'Musk');
+SELECT insert_note('538cc78a-c60a-43b1-a63f-93a14b3c4b7c', 'note1', 'note1 body', 1);
+SELECT insert_note('fdc3db28-e1c2-4ace-acf0-33704fe99696', 'note2', 'note2 body', 3);
+SELECT insert_note('4636f304-7689-4152-9b13-56283021ea06', 'note3', 'note3 body', 3);
+SELECT insert_note('b14d790d-de6c-4ce8-b7ac-c7f8785c4c8c', 'note4', 'note4 body', 2);
+SELECT insert_note('086f2233-2d19-44b8-9e62-06f33715e379', 'note5', 'note5 body', 2);
+SELECT insert_note('5761f123-a155-44f3-8e81-50041c9c6c3f', 'note6', 'note6 body', 3);
+SELECT insert_note('6399ba42-fbb9-4fc0-994d-07b30275daab', 'note7', 'note7 body', 1);
+SELECT select_note('fdc3db28-e1c2-4ace-acf0-33704fe99696');
+SELECT select_note('5761f123-a155-44f3-8e81-50041c9c6c3f');
+SELECT update_note_mark_deleted('b14d790d-de6c-4ce8-b7ac-c7f8785c4c8c');
+SELECT select_users_notes_count();
+SELECT update_note_mark_deleted('086f2233-2d19-44b8-9e62-06f33715e379');
+SELECT select_users_notes_count();
+SELECT select_user_notes(1);
+SELECT select_user_notes(3);
