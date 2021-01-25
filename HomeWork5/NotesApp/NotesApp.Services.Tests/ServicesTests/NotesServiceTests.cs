@@ -1,5 +1,4 @@
 using System;
-using System.Data.SqlTypes;
 using Moq;
 using NotesApp.Services.Abstractions;
 using NotesApp.Services.Models;

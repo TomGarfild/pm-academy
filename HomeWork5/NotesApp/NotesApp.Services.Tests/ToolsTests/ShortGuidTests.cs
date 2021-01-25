@@ -7,19 +7,22 @@ namespace NotesApp.Tests.ToolsTests
     public class ShortGuidTests
     {
         [Fact]
-        public void ToShortId_Transform_Guid_To_ShortGuid()
+        public void ToShortId_Should_Transform_Guid_To_ShortGuid()
         {
-            Assert.IsType<string>(Guid.NewGuid().ToShortId());
+            var guid = Guid.NewGuid();
+            Assert.Equal(guid, guid.ToShortId().FromShortId());
         }
         [Fact]
-        public void FromShortId_Transform_String_To_Guid()
+        public void FromShortId_Should_Transform_ShortGuid_To_Guid()
         {
-            Assert.IsType<Guid>(Guid.NewGuid().ToString().FromShortId());
+            var guid = Guid.NewGuid();
+            Assert.Equal(guid, guid.ToString().FromShortId());
         }
         [Fact]
-        public void FromShortId_Transform_When_Add_Two_Equals()
+        public void FromShortId_Should_Transform_When_Add_Two_Equals_Sign()
         {
-            Assert.IsType<Guid>((Guid.NewGuid().ToShortId()+"==").FromShortId());
+            var guid = Guid.NewGuid();
+            Assert.Equal(guid, (guid.ToShortId()+"==").FromShortId());
         }
         [Fact]
         public void FromShortId_Should_Fail_If_Value_Invalid()

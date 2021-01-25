@@ -14,7 +14,7 @@ namespace NotesApp.Tests.ToolsTests
             Assert.Throws<ArgumentOutOfRangeException>(() => NumberGenerator.GeneratePositiveLong(-1));
         }
         [Fact]
-        public void GeneratePositiveLong_Should_Returns_Number_With_Set_Length()
+        public void GeneratePositiveLong_Should_Return_Number_With_Set_Length()
         {
             var length = 10;
             var number = NumberGenerator.GeneratePositiveLong(length);
