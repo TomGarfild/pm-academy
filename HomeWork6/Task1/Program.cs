@@ -1,12 +1,9 @@
-﻿using System;
-
-namespace Task1
+﻿namespace Task1
 {
-    class Program
+    public class Program
     {
-        static void Main()
+        private static void Main()
         {
-            
         }
     }
 }
