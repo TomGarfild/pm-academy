@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Task1
 {
@@ -12,11 +11,9 @@ namespace Task1
             Console.WriteLine("Prime numbers search.");
             Console.WriteLine("Author: Safroniuk Oleksii\n");
 
+            var stopwatch = new Stopwatch();
             while (true)
             {
-                var low = Math.Max(GetBound("Enter low bound of range: "), 2);
-                var high = GetBound("Enter high bound of range: ");
-
                 var command = GetInputCommand(new string[]
                     {"LINQ (consistent search)", "PLINQ (parallel search)", "Exit"});
 
@@ -24,15 +21,16 @@ namespace Task1
                 {
                     case 1:
                     case 2:
-                        var stopwatch = new Stopwatch();
+                        var low = GetBound("Enter low bound of range: ");
+                        var high = GetBound("Enter high bound of range: ");
+
                         stopwatch.Start();
-
                         int count = Primes.CountInRange(low, high, command);
-
                         stopwatch.Stop();
 
                         Console.WriteLine($"Primes in range [{low}; {high}]: {count}");
                         Console.WriteLine($"Elapsed: {stopwatch.Elapsed}");
+                        stopwatch.Reset();
                         break;
 
                     case 3:

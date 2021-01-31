@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Task1
 {
@@ -9,6 +10,7 @@ namespace Task1
 
             if (high < low) return 0;
 
+            low = Math.Max(low, 2);
             int count;
 
             if (type == 1)
