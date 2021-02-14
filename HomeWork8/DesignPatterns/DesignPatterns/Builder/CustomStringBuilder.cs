@@ -1,5 +1,3 @@
-using System;
-
 namespace DesignPatterns.Builder
 {
     public class CustomStringBuilder : ICustomStringBuilder
