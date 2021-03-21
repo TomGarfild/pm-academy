@@ -71,7 +71,7 @@ namespace DepsWebApp.Authentication
             {
                 var authHeader= request.Headers[HeaderNames.Authorization].FirstOrDefault();
                 if (authHeader == null) return null;
-                var userBytes = Convert.FromBase64String(authHeader);
+                var userBytes = Convert.FromBase64String(authHeader.Split(' ')[1]);
                 var userString = Encoding.UTF8.GetString(userBytes).Split(':');
                 var login = userString[0];
                 var password = userString[1];

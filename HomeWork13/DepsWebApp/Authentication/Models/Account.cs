@@ -1,14 +1,23 @@
-﻿namespace DepsWebApp.Authentication.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DepsWebApp.Authentication.Models
 {
     /// <summary>
     /// Account model for authentication.
     /// </summary>
+    [Table("Users")]
     public class Account
     {
         /// <summary>
-        /// Id.
+        /// Auto generated account id.
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
+        /// <summary>
+        /// Login.
+        /// </summary>
+        public string Login { get; set; }
 
         /// <summary>
         /// PasswordHash.
@@ -18,11 +27,11 @@
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="id">Id.</param>
+        /// <param name="login">Login.</param>
         /// <param name="passwordHash">Password hash.</param>
-        public Account(int id, int passwordHash)
+        public Account(string login, int passwordHash)
         {
-            Id = id;
+            Login = login;
             PasswordHash = passwordHash;
         }
     }

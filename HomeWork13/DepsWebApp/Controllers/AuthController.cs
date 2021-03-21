@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using DepsWebApp.Models;
 using DepsWebApp.Services;
@@ -15,13 +16,17 @@ namespace DepsWebApp.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly DataContext _dbContext;
+
         /// <summary>
         /// Constructor with DI.
         /// </summary>
         /// <param name="authService">Authentication service.</param>
-        public AuthController(IAuthService authService)
+        /// <param name="dbContext"></param>
+        public AuthController(IAuthService authService, DataContext dbContext)
         {
             _authService = authService;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -38,8 +43,8 @@ namespace DepsWebApp.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            var accountId = await _authService.RegisterAsync(user.Login, user.Password);
-            if (accountId.HasValue) return Ok();
+            var canRegster = await _authService.RegisterAsync(user.Login, user.Password);
+            if (canRegster) return Ok();
             return BadRequest();
         }
     }

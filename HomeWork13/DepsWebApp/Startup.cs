@@ -9,6 +9,7 @@ using DepsWebApp.Options;
 using DepsWebApp.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
@@ -34,7 +35,7 @@ namespace DepsWebApp
                 .Configure<CacheOptions>(Configuration.GetSection("Cache"))
                 .Configure<NbuClientOptions>(Configuration.GetSection("Client"))
                 .Configure<RatesOptions>(Configuration.GetSection("Rates"));
-            
+
             // Add application services
             services.AddScoped<IRatesService, RatesService>();
 
@@ -46,7 +47,7 @@ namespace DepsWebApp
             services.AddHostedService<CacheHostedService>();
 
             // Add AuthServiceInMemory as Singleton
-            services.AddSingleton<IAuthService, AuthServiceInMemory>();
+            services.AddTransient<IAuthService, AuthService>();
 
             // Add batch of Swashbuckle Swagger services
             services.AddSwaggerGen(c =>
@@ -88,6 +89,9 @@ namespace DepsWebApp
                 .AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(
                     "BasicAuthentication", null);
+
+            services.AddDbContext<DataContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DataContext")));
 
             // Add batch of framework services
             services.AddMemoryCache();

@@ -13,7 +13,7 @@ namespace DepsWebApp.Services
         /// <param name="login"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        Task<int?> RegisterAsync(string login, string password);
+        Task<bool> RegisterAsync(string login, string password);
 
         /// <summary>
         /// 

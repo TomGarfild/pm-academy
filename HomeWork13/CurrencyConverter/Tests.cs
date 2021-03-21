@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DepsWebApp.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace CurrencyConverter
 {
@@ -22,9 +19,9 @@ namespace CurrencyConverter
         public async Task RunAll()
         {
             int success = 0;
-            int count = 5;
+            int count = 6;
             success += await Should_Return_BadRequest_When_UnAuthorized(_httpClient);
-            var login = "login222";
+            var login = "login45";
             var password = "123456qewrtt";
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(
@@ -35,6 +32,12 @@ namespace CurrencyConverter
             success += await Should_Return_BadRequest_If_Currency_Does_Not_Exist(_httpClient);
             success += await Should_Return_Result_Amount_If_Amount_Has_Value(_httpClient);
             success += await Should_Return_Result_Amount_If_Amount_Is_Empty(_httpClient);
+            password = "1234";
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(
+                    "Basic",
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes($"{login}:{password}")));
+            success += await Should_Return_UnAuthorized_When_Wrong_Password(_httpClient);
             Console.WriteLine($"{success}/{count} successful tests");
         }
 
@@ -45,7 +48,7 @@ namespace CurrencyConverter
             Console.WriteLine($"Test: {testName}");
             var request = $"Rates/UHH/UAH";
             Console.WriteLine($"Request: get {httpClient.BaseAddress}{request}");
-            var expectedCode = 400;
+            var expectedCode = 401;
             var response = await httpClient.GetAsync(httpClient.BaseAddress + request);
             var actualCode = (int)response.StatusCode;
 
@@ -116,6 +119,24 @@ namespace CurrencyConverter
 
             return GetResult(expectedCode == actualCode && expected == actual, testName);
         }
+
+        private async Task<int> Should_Return_UnAuthorized_When_Wrong_Password(HttpClient httpClient)
+        {
+            var testName = "Wrong password";
+            Console.WriteLine($"Test: {testName}");
+
+            var request = "Rates/UAH/UAH";
+            Console.WriteLine($"Request: get {httpClient.BaseAddress}{request}");
+
+            var expectedCode = 401;
+            var response = await httpClient.GetAsync(httpClient.BaseAddress + request);
+
+            var actualCode = (int)response.StatusCode;
+
+
+            return GetResult(expectedCode == actualCode, testName);
+        }
+        
 
         private int GetResult(bool condition, string testName)
         {
